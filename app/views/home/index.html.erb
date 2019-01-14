@@ -1,0 +1,298 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="/home" id="t"><h3>Forum</h3></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+        </ul>
+        <%#
+            <form class="form-inline mt-2 mt-md-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        %>
+    </div>
+    <% if current_account %>
+        <div class="nav-item dropdown" style="margin-right:5px">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white">
+            <%= current_account.first %> <%= current_account.last %>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="/home/<%= current_account.id %>">Profile</a>
+                <a class="dropdown-item" href="/logout">Logout</a>
+            </div>
+        </div>
+    <% end %>
+</nav>
+
+    <!-- Begin page content -->
+    <main role="main" style="margin-top:85px; margin-left:20px">
+        <form id="search" class="form-inline mt-2 mt-md-0 offset-lg-12" style="margin-bottom:5px;" action="/home" accept-charset="UTF-8" method="get">
+            <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+            <input id="eng" class="form-control mr-sm-2" type="text" placeholder="Search Article" aria-label="Search" name="title">
+        </form>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7 feed">
+                <div id="results" hidden>
+                </div>
+                <% @posts.each do |post| %>
+                    <div class="articles col-xs-12 col-sm-12 col-md-6 col-lg-12">
+                        <div class="card" style="margin-bottom:15px">
+                            <div class="card-header">
+                                <% @accounts.each do |t| %>
+                                    <% if(post.account_id === t.id) && t.image_url %>
+                                        <%= image_tag t.image_url.to_s, :style => "width:50px; height:50px; border-radius: 50%" %>
+                                        
+                                        <% elsif(post.account_id === t.id) && !(t.image_url) %>
+                                            <%= image_tag 'icon.jpg', :style => "width:50px; height:50px; border-radius: 50%" %>
+                                    <% end %>
+                                <% end %>
+                                <a style="font-weight:550; text-decoration:none;" href="/home/<%=post.account_id%> "> <%= post.email %> </a>
+                                <p class="card-text" style="position:absolute; margin-left:55px; margin-top:-20px; font-size:13px"><small class="text-muted"> <%= time_ago_in_words(post.created_at) %> ago,
+                                <% if post.comments.size === 0 %>
+                                    <%= '0 comment' %> </p>
+                                    <% else %>
+                                        <%= pluralize post.comments.size, 'comment' %>
+                                <% end %>
+                                </small> </p>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title"><%= post.title %></h5>
+                                <% if post.content.scan(/[\w-]+/).size < 90 %>
+                                    <p class="card-text"><%= post.content %></p>
+                                    <% else %>
+                                        <p id="cont<%=post.id%>" class="long" class="card-text">
+                                            <%= post.content.truncate_words(90) %> 
+                                            <a href='#see' class="see" id="cont<%=post.id%>"> see more </a> 
+                                        </p>
+                                        <div class="cont" id="cont<%=post.id%>" hidden> 
+                                            <p id="hide<%=post.id%>">
+                                                <%= post.content %> <a href='#hide' class="hide" id="hide<%=post.id%>"> see less </a>
+                                            </p>
+                                        </div>
+                                <% end %>
+                                <% if current_account.id === post.account_id %>
+                                    <input class="form-control" value=<%= post.id %> id="dd" hidden />  
+                                    <%= link_to 'Delete', home_posts_path(post), :id =>'delete', :class => "btn btn-danger btn-sm",:style => "float:right; margin-left:5px " %>
+                                <% end %>
+                                <%= link_to 'Comments', home_posts_path(post), :class => "btn btn-info btn-sm", :style => "float:right;" %>
+                            </div>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+            <div class="position-fixed col-xs-6 col-sm-6 col-md-12 col-lg-5 offset-xs offset-sm offset-md-6 offset-lg-7 float">
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-12 float">
+                    <% if current_account %>
+                        <%= link_to "Create Post", "#post", :class => "btn btn-success col-md-12", "data-toggle" => "modal" %> 
+                    <%end%>
+                    <br>
+                    <br>
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <div class="card-header text-white" style="background-color:#F06191; padding:10px">
+                            <h5 style="text-align:center"> Trending Articles </h5>
+                            </div>
+                        </thead>
+                        <tbody style="background-color:#F7F7F7">
+                            <tr>
+                                <td>
+                                    <a href="#">Nainit na ulam</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="#">New Year's Resolutions Scam</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="#">uganda</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <%= will_paginate @posts, :id=>"page"%>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<% if current_account %>
+    <div class="modal fade bs-example-modal" id="post" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+        <form id="add" method="POST" action="/home/<%= current_account.id %>/posts">
+            <div class="modal-content">
+            <div class="modal-header" style="background-color:#343A40;">
+                <h4 class="modal-title" style="color:white; text-align:center"> Create Post</h4>
+                <button class="close" type="button" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12"><b>Title</b>
+                    <input class="form-control" type="text" name="post[title]" id="post_title"/>  
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12"><b>Content</b>
+                        <textarea class="form-control" rows="5" name="post[content]"  id="post_content"></textarea> 
+                    </div>
+                </div>
+                    <input class="form-control" hidden type="email" value=<%= current_account.email %> name="post[email]" id="post_email"/>
+            <div class="modal-footer">
+                <input id="gawa" class="btn btn-info" type="submit" value="Create" />
+                <button class="btn btn-danger" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+            </div>
+        </form>
+        </div>
+    </div>
+<% end %>
+
+<script>
+    $('.see').click(function(x){
+        x.preventDefault();
+        var p =  $(this).closest($('p.long')).attr('id')
+        console.log(p)
+        $('div#'+p).removeAttr('hidden');
+        $(this).closest($('p.long')).hide();
+        $('a#'+p).attr('hidden', 'hidden');
+    })
+    $('.hide').click(function(q){
+        q.preventDefault();
+        var y = $(this).closest($('div.cont')).attr('id')
+        console.log(y)
+        $('div#'+y).attr('hidden', 'hidden');
+        $(this).closest($('p#'+y).show())
+        $('a#'+y).removeAttr('hidden')
+    })
+    $(document).ready(function(){ 
+        $("form#search").keyup(function(){
+            if ($("input#eng").val() == "") {
+                $("div#results").attr("hidden", "hidden")
+            }
+            else{
+                $("div#results").removeAttr("hidden")
+                $.ajax({
+                    type: "get",
+                    url: $("form#search").attr('action'),
+                    data: $('form#search').serializeArray(),
+                    success: function(json){
+                        console.log(json);
+                        if(json.length){
+                            var markup = "<hr>";
+                            markup +='    <table class="table">';
+                            markup +='        <thead class="thead-dark">';
+                            markup +='            <tr>';
+                            markup +='                <th> Search Results </th>';
+                            markup +='                <th></th>';
+                            markup +='            </tr>';
+                            markup +='        </thead>';
+                            markup +='        <tbody style="background-color:white">';
+                            $.each(json, function(k,v){
+                                markup +='            <tr>';
+                                markup +='                <td>' +v.title+ '</td>';
+                                markup +='                <td> <a href=/home/'+v.id+'/posts class="btn btn-info btn-sm">View Post </a> </td>';
+                                markup +='            </tr>';
+                            })
+                            markup +='        </tbody>';
+                            markup +='    </table>';
+                            $("div#results").html(markup);
+                        }
+                        else{
+                            var markup = "<hr>";
+                            markup +='    <table class="table">';
+                            markup +='        <thead class="thead-dark">';
+                            markup +='            <tr>';
+                            markup +='                <th> No post  found </th>';
+                            markup +='            </tr>';
+                            markup +='        </thead>';
+                            $("div#results").html(markup);
+                        }
+                    }
+                })
+            }
+        });
+    })
+    $("form#add").submit(function(w){
+        w.preventDefault();
+        $.ajax({
+            type: "post",
+            url: $('form#add').attr('action'),
+            data: $('form#add').serializeArray(),
+            success: function(response){
+                if(response.message == "success"){
+                    $('#post').modal('hide');
+                    swal({
+                        type: 'success',
+                        title: 'Post Created!!',
+                        showConfirmButton: false,
+                        },setTimeout(function() {
+                            location.reload();
+                        }, 1000)
+                    )
+                }
+                else if(response.message == "failed"){
+                    swal({
+                        type: 'warning',
+                        title: 'Login Failed!!',
+                        text: 'Incorrect email or password'
+                    })
+                }
+                
+            }
+        })
+    })
+    $('a#delete').click(function(x){
+        x.preventDefault();
+        var current = $(this).attr('href');
+        var e = $('input#dd').val();
+        console.log(current);
+        $.ajax({
+        method: 'get',
+        url: $(this).attr('href'),
+        success: function(json){
+            console.log(json)
+            swal({
+            type: "question",
+            title: 'Delete this post?',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+            preConfirm: () => {
+                return json
+            }
+            }).then(json=>{
+            if(json.value){
+                console.log(json.value);
+                $.ajax({
+                    method: 'DELETE',
+                    url: '/posts/'+e,
+                    data: json.value,
+                    success: function(response){
+                    if(response.message == 'success'){
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                        });
+                        toast({
+                            type: 'success',
+                            title: 'Post Deleted'
+                        },setTimeout(function() {
+                                location.reload();
+                            }, 1000))
+                        }
+                    }
+                })
+            }
+            else{
+                }
+            });
+        }
+
+        })
+    })
+</script>

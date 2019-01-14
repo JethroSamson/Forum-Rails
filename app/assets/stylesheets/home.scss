@@ -1,0 +1,25 @@
+// Place all the styles related to the Home controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#navCon{
+    width: 40%;
+    height: 50%
+}
+#t{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+.m , .previous_page, .next_page{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #3F729B;
+}
+// @media (min-width: 230px){
+//     .float{
+//             margin-top:500px;
+//     }
+// }
+// @media (max-width: 245px){
+//     .main{
+//             margin-top:500px;
+//     }
+// }

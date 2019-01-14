@@ -1,0 +1,153 @@
+<div class="row">
+	<div class="col-md-8">
+        <%= image_tag 'm.jpg', :id=> "imagecon" %>
+    </div>
+	<div class="col-md-4" style="padding-top:7%; padding-left:2px">
+        <div class="card">
+            <div class="card-header" style="background-color:#80AB9A">
+                <h4 style="text-align:center"> Login </h4>
+            </div>
+            <div class="card-body">
+                <form id="login" method="POST" action="/sessions">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group"><b> Email</b>
+                                <input class="form-control" type="email" name="email" id="email" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group"><b> Password</b>
+                                <input class="form-control" type="password" name="password" id="password" required/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <footer align="center">
+                    <input id="log" class="btn btn-info" type="submit"  value="Login" />                        
+                    <%= link_to "Sign-up", "#sign", :class => "btn btn-info", "data-toggle" => "modal" %>                        
+                </footer>
+                <br>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade bs-example-modal" id="sign" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <form id="add" method="POST" action="/landing">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#80AB9A;">
+            <h4 class="modal-title" id="myModalLabel" style="color:white;"> Sign up</h4>
+            <button class="close" type="button" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6"><b>First Name</b>
+                  <input class="form-control" type="text" name="account[first]" id="account_first"/>  
+                </div>
+              <div class="col-md-6"><b>Last Name</b>
+                  <input class="form-control" type="text" name="account[last]" id="account_last"/>  
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group"><b> Email</b>
+                    <input class="form-control" type="email" name="account[email]" id="account_email"/>
+                  </div>
+                </div>
+              </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group"><b>Password</b>
+                  <input class="form-control" type="password" name="account[password]" id="account_password"/>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group"><b>Confirm Password</b>
+                  <input class="form-control" type="password" id="confirm"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input id="gawa" class="btn btn-info" type="submit" value="Submit" />
+            <button class="btn btn-danger" type="button" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+<script>
+    $("form#login").submit(function(w){
+        w.preventDefault();
+        $.ajax({
+            type: "post",
+            url: $('form#login').attr('action'),
+            data: $('form#login').serializeArray(),
+            success: function(response){
+                console.log(response.id)
+                if(response.message == "success")
+                swal({
+                    type: 'success',
+                    title: 'Logged in!!',
+                    showConfirmButton: false,
+                    },setTimeout(function() {
+                        window.location.href = "/home";
+                    }, 1000)
+                )
+                else if(response.message == "failed"){
+                    swal({
+                        type: 'warning',
+                        title: 'Login Failed!!',
+                        text: 'Incorrect email or password'
+                    })
+                }
+                
+            }
+        })
+    })
+  $(document).ready(function(){
+    $("form#add").submit(function(s){
+    s.preventDefault();
+    var una = $('#account_password').val();
+    var pang = $('#confirm').val();
+    if(una === pang){
+        $('#sign').modal('hide');
+        $.ajax({
+            type: "POST",
+            url: $('form#add').attr('action'),
+            data: $('form#add').serializeArray(),
+            success: function(response){
+                console.log(response.id)
+                console.log(response.vv)
+                $('#sign').modal('hide');
+                if(response.message == 'success'){
+                    swal({
+                        type: 'success',
+                        title: 'Success!',
+                        text: 'User Registered',
+                        showConfirmButton: false
+                        },setTimeout(function() {
+                            location.reload();
+                        }, 1000)
+                    );
+                }
+            }
+        });
+    }
+    else
+        swal({
+            type: "error",
+            title: "Registration Failed!",
+            text: "Password didn't match"
+        })
+        $('#sign').modal('hide');
+    });
+});
+</script>

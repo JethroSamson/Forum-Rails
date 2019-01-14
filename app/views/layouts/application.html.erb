@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= favicon_link_tag 'icon.ico' %>
+    <title>Forum</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+  <%= javascript_include_tag('jquery.min.js') %>
+  <%= javascript_include_tag('sweetalert2.all.min.js') %>
+  <%= javascript_include_tag('sweetalert2.min.js') %>
+  <%= javascript_include_tag('moment.js') %>
+  <%= javascript_include_tag('moment.min.js') %>
+  <%= javascript_include_tag('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js') %>
+  <%= javascript_include_tag('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js') %>
+  <%= stylesheet_link_tag "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" %>
+  <%= stylesheet_link_tag "sweetalert2.min.css" %>
+  <body style="background-color:#DAE0E6">
+    <%= yield %>
+  </body>
+</html>
