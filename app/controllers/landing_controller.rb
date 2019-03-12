@@ -9,6 +9,7 @@ class LandingController < ApplicationController
     @signup = Account.new
     end
   def create
+    accounts = Account.select("email").all
     @signup = Account.new(account_params)
         if @signup.save
             # UserMailer.signup_confirmation(@signup).deliver
@@ -17,6 +18,11 @@ class LandingController < ApplicationController
                 message: "success",
                 id:  @signup.id,
                 vv: session[:id]
+            }
+          else
+            render json: {
+              error_message: "email taken",
+              message: "failed"
             }
         end
 

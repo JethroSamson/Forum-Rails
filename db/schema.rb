@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_04_033304) do
+ActiveRecord::Schema.define(version: 2019_03_06_064449) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "first"
@@ -40,6 +40,8 @@ ActiveRecord::Schema.define(version: 2019_01_04_033304) do
     t.integer "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image"
+    t.integer "comments_count", default: 0, null: false
     t.index ["account_id"], name: "index_posts_on_account_id"
   end
 

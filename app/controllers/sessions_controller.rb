@@ -5,14 +5,18 @@ class SessionsController < ApplicationController
   
   def create
     user = Account.find_by_email(params[:email])
-    if user && Account.find_by_password(params[:password])
+    password = Account.find_by_password(params[:password])
+    pass = Account.select('password').where("email = ?", params[:email])
+    if user && (user.password == password.password)
       session[:id] = user.id
       render json: {
-        message: "success"
+        message: "success",
+        username: user.first
       }
-
     else
       render json: {
+        # sa_email: user.password,
+        # sa_password: password.password,
         message: "failed"
       }
     end

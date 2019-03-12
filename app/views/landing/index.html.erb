@@ -1,3 +1,24 @@
+<header>
+  <div class="view jarallax" data-jarallax='{"speed": 0.2}' style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/76.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+    <div class="mask rgba-white-light d-flex justify-content-center align-items-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 white-text text-center">
+            <h1 class="display-3 mb-0 pt-md-5 pt-5 white-text font-weight-bold animated fadeInUpBig" data-wow-delay="0.3s"> <%= image_tag 'pngfinal', :class=>"img-fluid mx-auto d-block", :style=>"width: 200px;"%>
+            </h1>
+            <h5 class="text-uppercase pt-md-5 pt-sm-2 pt-5 pb-md-5 pb-sm-3 pb-5 white-text font-weight-bold animated delay-1s fadeInRight">Ruby on Rails Forum Web Application</h5>
+            <div class="wow fadeInDown" data-wow-delay="0.3s">
+                <%= link_to "Login", "#login", :class=> "btn btn-light-blue btn-lg btn-rounded waves-effect animated rubberBand", "data-toggle" => "modal"  %>
+                <%= link_to "Sign-up", "#sign", :class=> "btn btn-indigo btn-lg btn-rounded waves-effect animated rubberBand", "data-toggle" => "modal" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<% 
+=begin %> 
 <div class="row">
 	<div class="col-md-8">
         <%= image_tag 'm.jpg', :id=> "imagecon" %>
@@ -34,8 +55,88 @@
         </div>
     </div>
 </div>
+<% 
+=end %>
 
+<div class="modal fade right" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+<div class="modal-dialog modal-side modal-top-right" role="document">
+    <div class="modal-content">
+      <div class="modal-header aqua-gradient">
+        <h4 class="modal-title w-100" id="myModalLabel">Login</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <form style="color: #757575;" id="login" method="POST" action="/sessions">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs 12 col-sm-12 col-md-6 col-lg-12 md-form"><b>Email</b>
+                        <input class="form-control" type="email" name="email" id="email" required/>  
+                    </div>
+                    <div class="col-xs 12 col-sm-12 col-md-6 col-lg-12 md-form"><b>Password</b>
+                        <input class="form-control" type="password" name="password" id="password" required/>  
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button> -->
+                <input id="log" class="btn btn-primary btn-sm" type="submit" value="Login" /> 
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
 
+<div class="modal fade right" id="sign" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+<div class="modal-dialog modal-side modal-top-right" role="document">
+    <div class="modal-content">
+      <div class="modal-header blue-gradient">
+        <h4 class="modal-title w-100" id="myModalLabel">Sign Up</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <form style="color: #757575;" id="add" method="POST" action="/landing">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 md-form"><b>First Name</b>
+                        <input class="form-control" type="text" name="account[first]" id="account_first"/>  
+                    </div>
+                    <div class="col-md-6 md-form"><b>Last Name</b>
+                        <input class="form-control" type="text" name="account[last]" id="account_last"/>  
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10 md-form">
+                        <div class="form-group"><b> Email</b>
+                            <input class="form-control" type="email" name="account[email]" id="account_email"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 md-form">
+                        <div class="form-group"><b>Password</b>
+                            <input class="form-control" type="password" name="account[password]" id="account_password"/>
+                        </div>
+                    </div>
+                    <div class="col-md-6 md-form">
+                        <div class="form-group"><b>Confirm Password</b>
+                            <input class="form-control" type="password" id="confirm"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="reset" class="btn btn-secondary btn-sm" value="Clear Fields">
+                <input id="gawa" class="btn btn-info btn-sm" type="submit" value="Submit" />
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+<!-- 
 <div class="modal fade bs-example-modal" id="sign" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-md">
       <form id="add" method="POST" action="/landing">
@@ -81,8 +182,7 @@
       </form>
     </div>
   </div>
-
-
+-->
 <script>
     $("form#login").submit(function(w){
         w.preventDefault();
@@ -91,16 +191,18 @@
             url: $('form#login').attr('action'),
             data: $('form#login').serializeArray(),
             success: function(response){
-                console.log(response.id)
-                if(response.message == "success")
-                swal({
-                    type: 'success',
-                    title: 'Logged in!!',
-                    showConfirmButton: false,
-                    },setTimeout(function() {
-                        window.location.href = "/home";
-                    }, 1000)
-                )
+                console.log(response)
+                if(response.message == "success"){
+                  var sesssion_name = response.username;
+                  swal({
+                      type: 'success',
+                      title: 'Welcome '+sesssion_name,
+                      showConfirmButton: false,
+                      },setTimeout(function() {
+                          window.location.href = "/home";
+                      }, 1000)
+                  )
+                }
                 else if(response.message == "failed"){
                     swal({
                         type: 'warning',
@@ -113,11 +215,20 @@
         })
     })
   $(document).ready(function(){
+    new WOW().init();
     $("form#add").submit(function(s){
     s.preventDefault();
     var una = $('#account_password').val();
+    var password_length = una.length;
     var pang = $('#confirm').val();
-    if(una === pang){
+    if(password_length < 8){
+      swal({
+          type: "warning",
+          title: "Registration Failed!",
+          text: "Password must be at least 8 characters"
+      })
+    }
+    else if(una === pang){
         $('#sign').modal('hide');
         $.ajax({
             type: "POST",
@@ -136,6 +247,15 @@
                         },setTimeout(function() {
                             location.reload();
                         }, 1000)
+                    );
+                }
+                else if(response.message == 'failed'){
+                    swal({
+                        type: 'warning',
+                        title: 'Registration Failed',
+                        text: response.error_message,
+                        showConfirmButton: false
+                        }
                     );
                 }
             }

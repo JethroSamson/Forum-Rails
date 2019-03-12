@@ -1,0 +1,259 @@
+<%
+=begin %>
+<main role="main" style="margin-top:85px; margin-left:20px">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 feed">
+            <div class="card" style="margin-bottom:15px">
+                <div class="view overlay">
+                    <%= image_tag @post.image_url.to_s, :class=>"card-img-top", :style=>"width:100%; height:300px"%>
+                    <a>
+                    <div class="mask rgba-white-slight"></div>
+                    </a>
+                </div>
+                <div class="card-header">
+                    <% @accounts.each do |t| %>
+                        <% if(@post.account_id === t.id) && t.image_url %>
+                            <%= image_tag t.image_url.to_s, :style => "width:50px; height:50px; border-radius: 50%" %>
+                            <% elsif(@post.account_id === t.id) && !(t.image_url) %>
+                                <%= image_tag 'myAvatar.png', :style => "width:50px; height:50px; border-radius: 50%" %>
+                        <% end %>
+                    <% end %>
+                    <h5 class="font-weight-bold " style="margin-top:-40px; margin-left:55px"> <%= @post.title %> </h5>
+                    <span class="badge badge-default position-absolute" style="font-size:10px; font-style:italic; right:0"> <%= @post.created_at.strftime("%D %I:%M %p") %>, <%= @comments.count %> comments <span>
+                </div>
+                <div class="card-body">
+                    <p class="card-text"> <%= @post.content %> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<%
+=begin %>
+<div class="card" style="margin-bottom:15px">
+    <div class="card-header">
+        <h4><%= @post.title %></h4>
+        <p style="font-size:10px; margin-bottom:-20px; font-style:italic"> <%= @post.created_at.strftime("%D %I:%M %p") %>, <%= @comments.count %> comments <p>
+    </div>
+    <div class="card-body">
+        <blockquote class="blockquote mb-0">
+            <p style="font-size:15px"><%= @post.content %></p>
+                <% if current_account && current_account.email === @post.email%>
+                    <footer class="blockquote-footer"> <cite title="Source Title">My Article</cite></footer>
+                <% else %>
+                    <footer class="blockquote-footer">
+                        Posted by:
+                        <% @accounts.each do |acct| %>
+                            <% if (@post.account_id === acct.id) && acct.image_url %>
+                                <%= image_tag acct.image_url.to_s, :style => "width:35px; height:35px; border-radius: 10%" %>
+                            <% elsif(@post.account_id === acct.id) && !(acct.image_url) %>
+                                <%= image_tag 'icon.jpg', :style => "width:35px; height:35px; border-radius: 10%" %>
+                            <% end %>
+                        <% end %>
+                        <a style="color:#6C7592" href="/home/<%=@post.account_id%>">
+                            <cite title="Source Title">
+                                <%= @post.email %>
+                            </cite>
+                        </a>
+                    </footer> 
+                <% end %>
+        </blockquote>
+    </div>
+</div>
+<% @posts.each do |post| %>
+    <div class="articles col-xs-6 col-sm-6 col-md-6 col-lg-12">
+        <div class="card wow fadeInDown" style="margin-bottom:15px">
+            <div class="card-header">
+                <% @accounts.each do |t| %>
+                    <% if(post.account_id === t.id) && t.image_url %>
+                        <%= image_tag t.image_url.to_s, :style => "width:50px; height:50px; border-radius: 50%" %>
+                        
+                        <% elsif(post.account_id === t.id) && !(t.image_url) %>
+                            <%= image_tag 'myAvatar.png', :style => "width:50px; height:50px; border-radius: 50%" %>
+                    <% end %>
+                <% end %>
+                <a style="font-weight:550; text-decoration:none;" href="/home/<%=post.account_id%> "> <%= post.email %> </a>
+                <p class="card-text" style="position:absolute; margin-left:55px; margin-top:-20px; font-size:13px"><small class="text-muted"> <%= time_ago_in_words(post.created_at) %> ago,
+                <% if post.comments.size === 0 %>
+                    <%= '0 comment' %> </p>
+                    <% else %>
+                        <%= pluralize post.comments.size, 'comment' %>
+                <% end %>
+                </small> </p>
+            </div>
+            <div class="card-body">
+                <% if !post.image_url.to_s %>
+                <% elsif %>
+                    <div class="view overlay">
+                        <%= image_tag post.image_url.to_s, :class=>"card-img-top w-responsive"%>
+                        <a href="#!">
+                        <div class="mask rgba-white-slight"></div>
+                        </a>
+                    </div>
+                <% end %>
+                <h5 class="card-title"><%= post.title %></h5>
+                <% if post.content.scan(/[\w-]+/).size < 90 %>
+                    <p class="card-text"><%= post.content %></p>
+                    <% else %>
+                        <p id="cont<%=post.id%>" class="long" class="card-text">
+                            <%= post.content.truncate_words(90) %> 
+                            <a href='#see' class="see" id="cont<%=post.id%>"> see more </a> 
+                        </p>
+                        <div class="cont" id="cont<%=post.id%>" hidden> 
+                            <p id="hide<%=post.id%>">
+                                <%= post.content %> <a href='#hide' class="hide" id="hide<%=post.id%>"> see less </a>
+                            </p>
+                        </div>
+                <% end %>
+                <% if current_account.id === post.account_id %>
+                    <input class="form-control dd" value=<%= post.id %> hidden />  
+                    <%= link_to 'Delete', home_posts_path(post), :id =>'delete', :class => "btn btn-danger btn-sm delete",:style => "float:right; margin-left:5px " %>
+                <% end %>
+                <%= link_to 'Comments', home_posts_path(post), :class => "btn blue-gradient btn-rounded btn-sm", :style => "float:right;" %>
+            </div>
+        </div>
+    </div>
+<% end %>
+<br>
+<br>
+<br>
+<br>
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-12 col-lg-7 feed">
+        <% @posts.each do |post| %>
+            <div class="articles col-xs-6 col-sm-6 col-md-6 col-lg-12">
+                <div class="card mb-5">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                <div class="view overlay z-depth-5" style="margin-top:-40px;">
+                                    <% if !post.image_url %>
+                                    <% elsif %>
+                                        <%= image_tag post.image_url.to_s, :style=>"width:100%; height:100%" %>
+                                    <% end %>
+                                    <a>
+                                        <div class="mask rgba-white-slight"></div>
+                                    </a>
+                                </div>
+                            </div>
+                            <span class="badge badge-info position-absolute" style="top:0; right:0"> <%= time_ago_in_words(post.created_at) %> ago </span>
+                            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                <h4 class="card-title"> <%= post.title %> </h4>
+                                <div class="author bg-primary" style="border-radius:20px; width:auto">
+                                    <% @accounts.each do |t| %>
+                                        <% if(post.account_id === t.id) && t.image_url %>
+                                            <%= image_tag t.image_url.to_s, :class=>"rounded-circle img-fluid p-1", :style=>"width:30px; height:30px" %>
+                                        <% elsif(post.account_id === t.id) && !(t.image_url) %>
+                                            <%= image_tag 'myAvatar.png', :class=>"rounded-circle img-fluid p-1", :style=>"width:30px; height:30px" %>
+                                        <% end %>
+                                    <% end %>
+                                    <a href="/home/<%=post.account_id%>" style="text-decoration:none;" class="text-dark"> <%= post.email %> </a>
+                                </div>
+                                <hr>
+                                <% if post.content.scan(/[\w-]+/).size < 90 %>
+                                    <p class="card-text"><%= post.content %></p>
+                                    <% else %>
+                                        <p id="cont<%=post.id%>" class="long card-text">
+                                            <%= post.content.truncate_words(90) %> 
+                                            <a href='#see' class="see" id="cont<%=post.id%>"> see more </a> 
+                                        </p>
+                                        <div class="cont" id="cont<%=post.id%>" hidden> 
+                                            <p id="hide<%=post.id%>">
+                                                <%= post.content %> <a href='#hide' class="hide" id="hide<%=post.id%>"> see less </a>
+                                            </p>
+                                        </div>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ml-n4 mt-n4">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <ul>
+                                    <li style="display: inline; list-style: none">
+                                        <a href="/home/<%=post.id%>/posts" class="btn btn-unique btn-sm">
+                                            <i class="far fa-comments pr-2" aria-hidden="true"></i>
+                                            Comments 
+                                            <span class="badge badge-pill badge-danger">
+                                                <% if post.comments.size === 0 %>
+                                                    0
+                                                <% else %>
+                                                    <%= pluralize post.comments.size, '' %>
+                                                <% end %>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li style="display: inline; list-style: none">
+                                        <a href="/home/<%=post.account_id%>" class="btn btn-unique btn-sm">
+                                            <i class="fas fa-user-alt pr-2" aria-hidden="true"></i>About the Author
+                                        </a>
+                                    </li>
+                                    <% if current_account.id === post.account_id %>
+                                        <li style="display: inline; list-style: none">
+                                            <input class="form-control dd" value=<%= post.id %> id="dd" hidden />  
+                                            <%= link_to 'Delete', home_posts_path(post), :id =>'delete', :class => "btn btn-unique btn-sm delete"%>
+                                        </li>
+                                    <% end %>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% end %>
+    </div>
+</div>
+<script>
+
+    $('a#delete').click(function(x){
+        x.preventDefault();
+        var current = $(this).attr('href');
+        var e = $('input#dd').val();
+        console.log(current);
+        $.ajax({
+        method: 'get',
+        url: $(this).attr('href'),
+        success: function(json){
+            console.log(json)
+            swal({
+            type: "question",
+            title: 'Delete this post?',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+            preConfirm: () => {
+                return json
+            }
+            }).then(json=>{
+            if(json.value){
+                console.log(json.value);
+                $.ajax({
+                    method: 'DELETE',
+                    url: '/posts/'+e,
+                    data: json.value,
+                    success: function(response){
+                    if(response.message == 'success'){
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                        });
+                        toast({
+                            type: 'success',
+                            title: 'Post Deleted'
+                        },setTimeout(function() {
+                                location.reload();
+                            }, 1000))
+                        }
+                    }
+                })
+            }
+            else{
+                }
+            });
+        }
+
+        })
+    })
+</script>
+=end %>

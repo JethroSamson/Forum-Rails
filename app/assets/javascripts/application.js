@@ -14,4 +14,7 @@
 //= require activestorage
 //= require turbolinks
 //= require moment
+//= require tether
+//= require bootstrap
+//= require mdb
 //= require_tree .

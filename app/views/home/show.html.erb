@@ -1,18 +1,19 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="/home" id="t"><h3>Forum</h3></a>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top blue-gradient">
+    <a class="navbar-brand waves-effect" href="/home" id="t"><h3>
+        <%= image_tag 'pngfinal', :class=>"img-fluid", :style=>"width:50px;" %>
+        Forum
+    </h3></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+    <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
         </ul>
-        <%#
-            <form class="form-inline mt-2 mt-md-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        %>
     </div>
+    <form class="form-inline my-2 my-lg-0 ml-auto waves-effect" id="search" action="/home" accept-charset="UTF-8" method="get">
+        <input class="form-control" type="search" placeholder="Search Article" aria-label="Search" id="eng"  name="title">
+        <button class="btn btn-outline-white btn-md my-2 my-sm-0 ml-3" type="submit">Search</button>
+    </form>
     <% if current_account %>
         <div class="nav-item dropdown" style="margin-right:5px">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white">
@@ -29,22 +30,236 @@
     <!-- Begin page content -->
     <main role="main" style="margin-top:85px; margin-left:50px">
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" style="position:fixed; margin-left:-20px">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="position:fixed; margin-left:-20px">
+                <%= link_to "Create Post", "#post", :class => "btn aqua-gradient col-md-12", "data-toggle" => "modal" %>                 
                 <% if (current_account.id === @account.id) %>
-                    <%= link_to "Create Post", "#post", :class => "btn btn-success col-md-12", "data-toggle" => "modal", :style => "margin-bottom:5px" %>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <button class="btn btn-info col-md-12" type="button" id="edit"> Edit Profile </button>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-info col-md-12" type="button" id="pass"> Change Password </button>
+                    <div class="col-mb-3">
+                        <div class="card wow fadeIn mt-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                        <div class="view overlay z-depth-5" style="margin-top:-40px;">
+                                            <% if !(@account.image_url) %>
+                                                <%= image_tag 'myAvatar400.png', :style=>"width:100%; height:100%" %>
+                                            <% elsif %>
+                                                <%= image_tag @account.image_url.to_s, :style=>"width:100%; height:255.3px" %>
+                                            <% end %>
+                                            <a>
+                                                <div class="mask rgba-white-slight"></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <span class="badge badge-info position-absolute" style="top:0; right:0"> <%= @posts.count %> posts  </span>
+                                    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                        <h4 class="card-title"> <%= @account.first %> <%= @account.last %> </h4>
+                                        <div class="author blue-gradient" style="border-radius:20px; width:auto">
+                                            <a style="text-decoration:none;" class="text-dark ml-1"> <%= @account.email %> </a>
+                                        </div>
+                                        <hr>
+                                        <p class="card-text"> <%= @account.desc %> </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ml-n4 mt-n4">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                        <ul>
+                                            <li style="display: inline; list-style: none">
+                                                <a class="btn btn-unique btn-sm show_posts">
+                                                    <i class="far fa-newspaper pr-2" aria-hidden="true"></i>
+                                                    Posts
+                                                </a>
+                                            </li>
+                                            <li style="display: inline; list-style: none">
+                                                <a class="btn btn-unique btn-sm show_top">
+                                                    <i class="fas fa-certificate pr-2" aria-hidden="true"></i> Top Posts
+                                                </a>
+                                            </li>
+                                            <% if (current_account.id === @account.id) %>
+                                                <li style="display: inline; list-style: none">
+                                                    <a class="btn btn-unique btn-sm" id="edit">
+                                                        <i class="fas fa-user-alt pr-2" aria-hidden="true"></i> Edit Profile
+                                                    </a>
+                                                </li>
+                                                <li style="display: inline; list-style: none">
+                                                    <a class="btn btn-unique btn-sm" id="pass">
+                                                        <i class="fas fa-key pr-2" aria-hidden="true"></i>  Password
+                                                    </a>
+                                                </li>
+                                            <% end %>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <br>
+                    <% else %>
+                        <div class="col-mb-3">
+                            <div class="card wow fadeIn mt-3">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                            <div class="view overlay z-depth-5" style="margin-top:-40px;">
+                                                <% if !(@account.image_url) %>
+                                                    <%= image_tag 'myAvatar400.png', :style=>"width:100%; height:100%" %>
+                                                <% elsif %>
+                                                    <%= image_tag @account.image_url.to_s, :style=>"width:100%; height:255.3px" %>
+                                                <% end %>
+                                                <a>
+                                                    <div class="mask rgba-white-slight"></div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-info position-absolute" style="top:0; right:0"> <%= @posts.count %> posts  </span>
+                                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                            <h4 class="card-title"> <%= @account.first %> <%= @account.last %> </h4>
+                                            <div class="author blue-gradient" style="border-radius:20px; width:auto">
+                                                <a style="text-decoration:none;" class="text-dark ml-1"> <%= @account.email %> </a>
+                                            </div>
+                                            <hr>
+                                            <p class="card-text"> <%= @account.desc %> </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ml-n4 mt-n4">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <ul>
+                                                <li style="display: inline; list-style: none">
+                                                    <a class="btn btn-unique btn-sm show_posts">
+                                                        <i class="far fa-newspaper pr-2" aria-hidden="true"></i>
+                                                        Posts
+                                                    </a>
+                                                </li>
+                                                <li style="display: inline; list-style: none">
+                                                    <a class="btn btn-unique btn-sm show_top">
+                                                        <i class="fas fa-certificate pr-2" aria-hidden="true"></i> Top Posts
+                                                    </a>
+                                                </li>
+                                                <% if (current_account.id === @account.id) %>
+                                                    <li style="display: inline; list-style: none">
+                                                        <a class="btn btn-unique btn-sm" id="edit">
+                                                            <i class="fas fa-user-alt pr-2" aria-hidden="true"></i> Edit Profile
+                                                        </a>
+                                                    </li>
+                                                    <li style="display: inline; list-style: none">
+                                                        <a class="btn btn-unique btn-sm" id="pass">
+                                                            <i class="fas fa-key pr-2" aria-hidden="true"></i>  Password
+                                                        </a>
+                                                    </li>
+                                                <% end %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <%end%>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 offset-md-6 offset-lg-6">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="my_articles">
+                        <% if current_account.id === @account.id %>
+                            <h2 class="m" style="text-align:center"> My Articles </h2>
+                        <% else %>
+                            <h2 class="m" style="text-align:center"> <%= @account.first %> Articles </h2>
+                        <% end %>
+                        <% @posts.each do |post| %>
+                            <div class="card" style="margin-bottom:15px">
+                                <div class="card-header">
+                                    <% if !post.image_url %>
+                                        <% else %>
+                                            <div class="view overlay">    
+                                                <%= image_tag post.image_url.to_s, :class=>"card-img-top", :style=>"width:100%; height:300px"%>
+                                                <a>
+                                                <div class="mask rgba-white-slight"></div>
+                                                </a>
+                                            </div>
+                                    <% end %>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= post.title %></h5>
+                                    <% if post.content.scan(/[\w-]+/).size < 90 %>
+                                        <p class="card-text"><%= post.content %></p>
+                                        <% else %>
+                                            <p id="cont<%=post.id%>" class="long card-text">
+                                                <%= post.content.truncate_words(90) %> 
+                                                <a href='#see' class="see" id="cont<%=post.id%>"> see more </a> 
+                                            </p>
+                                            <div class="cont" id="cont<%=post.id%>" hidden> 
+                                                <p class="card-text" id="hide<%=post.id%>">
+                                                    <%= post.content %> <a href='#hide' class="hide" id="hide<%=post.id%>"> see less </a>
+                                                </p>
+                                            </div>
+                                    <% end %>
+                                    <p class="card-text"><small class="text-muted badge badge-pill badge-primary" style="position:absolute; right:0"> <%= pluralize post.comments.size, 'comment' %> </small> </p>
+                                    <li style="display: inline; list-style: none">
+                                        <%= link_to 'Comments', home_posts_path(post), :class => "btn blue-gradient btn-sm" %>
+                                    </li>
+                                    <% if current_account.id === post.account_id %>
+                                        <li style="display: inline; list-style: none">
+                                            <button class="btn blue-gradient btn-sm" data-toggle="modal" data-target="#edit_post" data-id=<%=post.id%> data-title="<%=post.title%>" data-content="<%= post.content %>" data-image=<%= post.image_url.to_s %> data-account_id=<%= post.account_id %> > <i class="fas fa-edit pr-2" aria-hidden="true"></i> Edit Post </button>
+                                        </li>
+                                        <li style="display: inline; list-style: none">
+                                            <input class="form-control dd" value=<%= post.id %> hidden />
+                                            <%= link_to  home_posts_path(post), :id =>'delete', :class => "btn blue-gradient btn-sm delete" do %>
+                                                <i class="fas fa-trash-alt pr-2" aria-hidden="true"></i> Delete
+                                            <% end %>
+                                        </li>
+                                    <% end %>
+                                </div>
+                            </div>
+                        <% end %>
+                    </div>
+                    <div class="show_top_posts" hidden>
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <div class="card-header text-white purple-gradient" style="padding:10px">
+                                <% if current_account.id === @account.id %>
+                                    <h5 style="text-align:center" class="font-weight-bold mb-0"> My Trending Articles </h5>
+                                <% else %>
+                                    <h5 style="text-align:center" class="font-weight-bold mb-0"> <%= @account.first %>'s Trending Articles </h5>
+                                <% end %>
+                                </div>
+                            </thead>
+                            <tbody style="background-color:#F7F7F7">
+                                <% @user_tops.each do |top| %>
+                                    <tr>
+                                        <td class="p-0">
+                                            <div class="card p-2 animated fadeInLeft">
+                                                <div>
+                                                    <span class="badge badge-danger position-absolute" style="top:0; left:0"> <%= top.comments_count %> </span>
+                                                    <% @accounts.each do |t| %>
+                                                        <% if(top.account_id === t.id) && t.image_url %>
+                                                            <%= image_tag t.image_url.to_s, :style => "width:40px; height:40px; border-radius: 50%" %>
+                                                                
+                                                            <% elsif(top.account_id === t.id) && !(t.image_url) %>
+                                                                <%= image_tag 'myAvatar.png', :style => "width:40px; height:40px; border-radius: 50%" %>
+                                                        <% end %>
+                                                    <% end %>
+                                                    <a href="/home/<%=top.id%>/posts" class="position-absolute ml-2">
+                                                        <p class="card-title">
+                                                            <%= top.title %>
+                                                        </p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% end %>
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="card mb-3" id="ed" hidden>
                         <form id="ed" method="PUT" action="/home/<%= current_account.id %>" enctype='multipart/form-data'>
                             <div class="card-body">
-                                <input class="form-control file-input" type="file" name="account[image]" id="account_image" accept="image/*" />
+                                <div class="text-center">
+                                    <img id="profile_preview" src="<%= @account.image_url.to_s %>" style="width:256.19px; height:215.3px "/>
+                                </div>
+                                <div class="col-md-12 md-form">
+                                    <input class="form-control file-input" id="account_image" type="file" name="account[image]" accept="image/*"  onchange="accountPreview(this);" />
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6"><b>First Name</b>
                                         <input class="form-control" type="text" name="account[first]" id="account_first" value= <%= @account.first %> />  
@@ -67,8 +282,8 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <input class="btn btn-info" type="submit" value="Update" />
-                                <button class="btn btn-primary hide" type="button" > Hide </button>
+                                <input class="btn btn-info btn-sm" type="submit" value="Update" />
+                                <button class="btn btn-primary hide btn-sm" type="button" > Hide </button>
                             </div>
                         </form>
                     </div>
@@ -80,157 +295,231 @@
                                         <input class="form-control" type="password" value=<%=@account.password%> />
                                     </div>
                                     <div class="col-md-6"><b>New Password</b>
-                                        <input class="form-control" type="password" name="account[password]" id="account_password" />  
+                                        <input class="form-control" type="password" name="account[password]" id="account_password" minlength="8" required />  
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <input class="btn btn-info" type="submit" value="Update" />
-                                <button class="btn btn-primary hide" type="button" > Hide </button>
+                                <input class="btn btn-info btn-sm" type="submit" value="Update" />
+                                <button class="btn btn-primary hide btn-sm" type="button" > Hide </button>
                             </div>
                         </form>
                     </div>
-                    <div class="col-mb-3">
-                        <div class="card flex-md-row mb-4 box-shadow h-md-250">
-                            <div class="card-body d-flex flex-column align-items-start">
-                                <h3 class="mb-0">
-                                    <a class="text-dark" href="#"> <%= @account.first %> <%= @account.last %> </a>
-                                </h3>
-                            <div class="mb-1 text-muted"> <%= @account.email %> </div>
-                                <p class="card-text mb-auto"> <%=@account.desc%> </p>
-                                <p class="card-text"><small class="text-muted"> <%= @posts.count %> posts </small> </p>
-                            </div>
-                            <% if !(@account.image_url)%>
-                                <%= image_tag 'icon.jpg', :class => "card-img-right flex-auto d-none d-md-block", :style => "width:200px; height:250px" %>
-                            <% else %>
-                                <%= image_tag @account.image_url.to_s, :class => "card-img-right flex-auto d-none d-md-block", :style => "width:200px; height:250px;" %>
-                            <% end %>
-                        </div>
-                    </div>
-                    <% else %>
-                        <div class="col-mb-3">
-                            <div class="card flex-md-row mb-4 box-shadow h-md-250">
-                                <div class="card-body d-flex flex-column align-items-start">
-                                    <h3 class="mb-0">
-                                        <a class="text-dark" href="#"> <%= @account.first %> <%= @account.last %> </a>
-                                    </h3>
-                                <div class="mb-1 text-muted"> <%= @account.email %> </div>
-                                    <p class="card-text mb-auto"> <%=@account.desc%> </p>
-                                    <p class="card-text"><small class="text-muted"> <%= @posts.count %> posts </small> </p>
-                                </div>
-                                <% if !(@account.image_url)%>
-                                    <%= image_tag 'icon.jpg', :class => "card-img-right flex-auto d-none d-md-block", :style => "width:200px; height:250px" %>
-                                <% else %>
-                                    <%= image_tag @account.image_url.to_s, :class => "card-img-right flex-auto d-none d-md-block", :style => "width:200px; height:250px" %>
-                                <% end %>
-                            </div>
-                        </div>
-                        <table class="table">
-                            <thead class="thead-dark">
-                                <div class="card-header text-white" style="background-color:#F06191; padding:10px">
-                                <h5 style="text-align:center"> Top Articles </h5>
-                                </div>
-                            </thead>
-                            <tbody style="background-color:#F7F7F7">
-                                <tr>
-                                    <td>
-                                        <a href="#">Nainit na ulam</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="#">New Year's Resolutions Scam</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="#">uganda</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                <%end%>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 offset-md-7 offset-lg-5">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <% if current_account.id === @account.id %>
-                        <h2 class="m" style="text-align:center"> My Articles </h2>
-                    <% else %>
-                        <h2 class="m" style="text-align:center"> <%= @account.first %> Articles </h2>
-                    <% end %>
-                    <% @posts.each do |post| %>
-                        <div class="card" style="margin-bottom:15px">
-                            <div class="card-header">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title"><%= post.title %></h5>
-                                <p class="card-text"><%= post.content %></p>
-                                <p class="card-text"><small class="text-muted" style="position:absolute"> <%= pluralize post.comments.size, 'comment' %> </small> </p>
-                                <%= link_to 'Comments', home_posts_path(post), :class => "btn btn-info btn-sm", :style => "float:right" %>
-                            </div>
-                        </div>
-                    <% end %>
                 </div>
             <div>
         </div>
     </main>
 
 <% if current_account %>
-    <div class="modal fade bs-example-modal" id="post" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-md">
-        <form id="add" method="POST" action="/home/<%= current_account.id %>/posts">
-            <div class="modal-content">
-            <div class="modal-header" style="background-color:#343A40;">
-                <h4 class="modal-title" style="color:white; text-align:center"> Create Post</h4>
-                <button class="close" type="button" data-dismiss="modal"><span aria-hidden="true">×</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12"><b>Title</b>
-                    <input class="form-control" type="text" name="post[title]" id="post_title"/>  
+    <div class="modal fade" id="post" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog cascading-modal" role="document">
+            <form id="add" method="POST" action="/home/<%= current_account.id %>/posts">
+                <div class="modal-content">
+                    <div class="modal-header blue-gradient white-text">
+                        <h4 class="title"><i class="far fa-edit"></i>Create Post </h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="image_preview_post" src="#" style="width:100%; height:100%" alt="post image" />
+                        <div class="col-md-12 md-form">
+                            <input class="form-control file-input" id="post_image" type="file" name="post[image]" accept="image/*"  onchange="imagePreviewPost(this);" />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 md-form"><b>Title</b>
+                                <input class="form-control" type="text" name="post[title]" id="post_title"/>  
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 md-form"><b>Content</b>
+                                <textarea class="form-control md-textarea" rows="5" name="post[content]"  id="post_content" style="overflow:auto"></textarea> 
+                            </div>
+                        </div>
+                        <input class="form-control" hidden type="email" value=<%= current_account.email %> name="post[email]" id="post_email"/>
+                        <input class="btn btn-info btn-sm float-right" type="submit" value="Create" />
                     </div>
                 </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-12"><b>Content</b>
-                        <textarea class="form-control" rows="5" name="post[content]"  id="post_content"></textarea> 
-                    </div>
-                </div>
-                    <input class="form-control" hidden type="email" value=<%= current_account.email %> name="post[email]" id="post_email"/>
-            <div class="modal-footer">
-                <input id="gawa" class="btn btn-info" type="submit" value="Create" />
-                <button class="btn btn-danger" type="button" data-dismiss="modal">Cancel</button>
-            </div>
-            </div>
-        </form>
+            </form>
         </div>
     </div>
 <% end %>
+<div class="modal fade" id="edit_post" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog cascading-modal" role="document">
+    <form class="edit" method="PATCH">
+        <div class="modal-content">
+            <div class="modal-header blue-gradient white-text">
+                <h4 class="title"><i class="far fa-edit"></i>Edit Post </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <img id="image_preview" src="" style="width:100%; height:100%"/>
+                <div class="col-md-12 md-form">
+                    <input class="form-control file-input" id="post_image_edit" type="file" name="post[image]" accept="image/*"  onchange="imagePreview(this);" />
+                </div>
+                <div class="row">
+                    <div class="col-md-12 md-form"><b>Title</b>
+                        <input class="form-control" type="number" name="post[id]" id="post_id_edit" hidden/>
+                        <input class="form-control" type="text" name="post[title]" id="post_title_edit"/>  
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 md-form"><b>Content</b>
+                        <textarea class="form-control md-textarea" rows="5" name="post[content]"  id="post_content_edit" style="overflow:auto"></textarea> 
+                    </div>
+                </div>
+                <input class="form-control" hidden type="email" value=<%= current_account.email %> name="post[email]" id="post_email_edit"/>
+                <input id="gawa" class="btn btn-info btn-sm float-right" type="submit" value="Submit" />
+            </div>
+        </div>
+    </form>
+  </div>
+</div>
 
 <script>
+    $('.see').click(function(x){
+        x.preventDefault();
+        var p =  $(this).closest($('p.long')).attr('id')
+        console.log(p)
+        $('div#'+p).removeAttr('hidden');
+        $(this).closest($('p.long')).hide();
+        $('a#'+p).attr('hidden', 'hidden');
+    })
+    $('.hide').click(function(q){
+        q.preventDefault();
+        var y = $(this).closest($('div.cont')).attr('id')
+        console.log(y)
+        $('div#'+y).attr('hidden', 'hidden');
+        $(this).closest($('p#'+y).show())
+        $('a#'+y).removeAttr('hidden')
+    })
+    //post
+    function imagePreviewPost(input) {
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#image_preview_post')
+            .attr('src', e.target.result)
+        };
+
+        reader.readAsDataURL(input.files[0]);
+        }
+    }
+    //Edit post
+    function imagePreview(input) {
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#image_preview')
+            .attr('src', e.target.result)
+        };
+
+        reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $('#edit_post').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var account_id = button.data('account_id')
+        var id = button.data('id')
+        var title = button.data('title')
+        var content = button.data('content')
+        var img_url = button.data('image')
+
+        var modal = $(this)
+        modal.find('.modal-body #post_id_edit').val(id)
+        modal.find('.modal-body #post_title_edit').val(title)
+        modal.find('.modal-body #post_content_edit').val(content)
+        $('form.edit').attr('action', '/home/'+account_id+'/posts/'+id)
+        $('#image_preview').attr('src', img_url)
+    });
     $(document).ready(function(){
-        $("button#edit").click(function(){
+        $("a#edit").click(function(){
             $("div#ed").removeAttr("hidden")
             $("div#ps").attr('hidden', 'hidden')
+            $("div.my_articles").attr('hidden', 'hidden')
+            $("div.show_top_posts").attr('hidden', 'hidden')
         })
-        $("button#pass").click(function(){
+        $("a#pass").click(function(){
             $("div#ps").removeAttr("hidden")
             $("div#ed").attr('hidden', 'hidden')
+            $("div.my_articles").attr('hidden', 'hidden')
+            $("div.show_top_posts").attr('hidden', 'hidden')
         })
         $("button.hide").click(function(){
             $("div#ps").attr('hidden', 'hidden')
             $("div#ed").attr('hidden', 'hidden')
+            $("div.my_articles").removeAttr("hidden")
+            $("div.show_top_posts").attr('hidden', 'hidden')
+        })
+        $("a.show_top").click(function(){
+            $("div.my_articles").attr('hidden', 'hidden')
+            $("div#ps").attr('hidden', 'hidden')
+            $("div#ed").attr('hidden', 'hidden')
+            $("div.show_top_posts").removeAttr("hidden")
+        })
+        $("a.show_posts").click(function(){
+            $("div.my_articles").removeAttr("hidden")
+            $("div#ps").attr('hidden', 'hidden')
+            $("div#ed").attr('hidden', 'hidden')
+            $("div.show_top_posts").attr('hidden', 'hidden')
         })
     })
+    $("form#add").submit(function(w){
+        var form = $('form#add')[0];
+        var data = new FormData(form);
+        w.preventDefault();
+        $.ajax({
+            type: "post",
+            url: $('form#add').attr('action'),
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: new FormData(form),
+            success: function(response){
+                if(response.message == "success"){
+                    $('#post').modal('hide');
+                    swal({
+                        type: 'success',
+                        title: 'Post Created!!',
+                        showConfirmButton: false,
+                        },setTimeout(function() {
+                            location.reload();
+                        }, 1000)
+                    )
+                }
+                else if(!response){
+                    swal({
+                        type: 'warning',
+                        text: 'Something went wrong, pls reload',
+                    })
+                }
+                
+            }
+        })
+    })
+    //Edit post
+    function accountPreview(input) {
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#profile_preview')
+            .attr('src', e.target.result)
+        };
+
+        reader.readAsDataURL(input.files[0]);
+        }
+    }
     $("form#ed").submit(function(w){
         var form = $('form#ed')[0];
         var data = new FormData(form);
         w.preventDefault();
         $.ajax({
-            type: "PUT",
+            type: "PATCH",
             url: $('form#ed').attr('action'),
             enctype: 'multipart/form-data',
-            processData: false,  // Important!
+            processData: false,
             contentType: false,
             cache: false,
             data: new FormData(form),
@@ -248,8 +537,41 @@
                 else if(response.message == "failed"){
                     swal({
                         type: 'warning',
-                        title: 'Failed!!',
-                        text: 'Incorrect email or password'
+                        text: 'Something went wrong, pls reload'
+                    })
+                }
+                
+            }
+        })
+    })
+    $("form.edit").submit(function(w){
+        var form = $('form.edit')[0];
+        var data = new FormData(form);
+        w.preventDefault();
+        $.ajax({
+            type: "PATCH",
+            url: $('form.edit').attr('action'),
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: new FormData(form),
+            success: function(response){
+                if(response.message == "success"){
+                    $('#post').modal('hide');
+                    swal({
+                        type: 'success',
+                        title: 'Post Edited!!',
+                        showConfirmButton: false,
+                        },setTimeout(function() {
+                            location.reload();
+                        }, 1000)
+                    )
+                }
+                else if(!response){
+                    swal({
+                        type: 'warning',
+                        text: 'Something went wrong, pls reload',
                     })
                 }
                 
@@ -276,10 +598,50 @@
                 else if(response.message == "failed"){
                     swal({
                         type: 'warning',
-                        title: 'Failed!!',
-                        text: 'Incorrect email or password'
+                        text: 'Something went wrong, pls reload'
                     })
                 }
+                
+            }
+        })
+    })
+    $('a.delete').click(function(s){
+        s.preventDefault()
+        var current = $(this).attr('href');
+        var e = $(this).siblings('input.dd').val();
+        console.log(e);
+        console.log(current);
+        swal({
+            type: "question",
+            title: 'Delete this post?',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+            cancelButtonClass: 'btn btn-danger',
+        }).then((result) => {
+            if(result.value){
+                var e = $(this).siblings('input.dd').val();
+                $.ajax({
+                    method: 'DELETE',
+                    url: '/posts/'+e,
+                    success: function(response){
+                    if(response.message == 'success'){
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                        });
+                        toast({
+                            type: 'success',
+                            title: 'Post Deleted'
+                        },setTimeout(function() {
+                                location.reload();
+                            }, 1000))
+                        }
+                    }
+                }) 
+            }
+            else{
                 
             }
         })

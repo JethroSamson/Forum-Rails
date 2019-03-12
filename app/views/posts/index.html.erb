@@ -1,25 +1,26 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="/home" id="t"><h3>Forum</h3></a>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top blue-gradient">
+    <a class="navbar-brand waves-effect" href="/home" id="t"><h3>
+        <%= image_tag 'pngfinal', :class=>"img-fluid", :style=>"width:50px;" %>
+        Forum
+    </h3></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+    <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
         </ul>
-        <%#
-            <form class="form-inline mt-2 mt-md-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        %>
     </div>
+    <form class="form-inline my-2 my-lg-0 ml-auto waves-effect" id="search" action="/home" accept-charset="UTF-8" method="get">
+        <input class="form-control" type="search" placeholder="Search Article" aria-label="Search" id="eng"  name="title">
+        <button class="btn btn-outline-white btn-md my-2 my-sm-0 ml-3" type="submit">Search</button>
+    </form>
     <% if current_account %>
         <div class="nav-item dropdown" style="margin-right:5px">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white">
             <%= current_account.first %> <%= current_account.last %>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="/home/<%=current_account.id%> ">Profile</a>
+                <a class="dropdown-item" href="/home/<%= current_account.id %>">Profile</a>
                 <a class="dropdown-item" href="/logout">Logout</a>
             </div>
         </div>
@@ -29,35 +30,46 @@
     <!-- Begin page content -->
     <main role="main" style="margin-top:85px; margin-left:20px">
         <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 feed">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 feed animated fadeIn">
                 <div class="card" style="margin-bottom:15px">
-                    <div class="card-header">
-                        <h4><%= @post.title %></h4>
-                        <p style="font-size:10px; margin-bottom:-20px; font-style:italic"> <%= @post.created_at.strftime("%D %I:%M %p") %>, <%= @comments.count %> comments <p>
+                    <% if !@post.image_url %>
+                        <% else %>
+                            <div class="view overlay">    
+                                <%= image_tag @post.image_url.to_s, :class=>"card-img-top", :style=>"width:100%; height:300px"%>
+                                <a>
+                                <div class="mask rgba-white-slight"></div>
+                                </a>
+                            </div>
+                    <% end %>
+                    <div class="card-header blue-gradient">
+                        <% @accounts.each do |t| %>
+                            <% if(@post.account_id === t.id) && t.image_url %>
+                                <a href="/home/<%=@post.account_id%>">
+                                    <%= image_tag t.image_url.to_s, :style => "width:50px; height:50px; border-radius: 50%" %>
+                                </a>
+                                <% elsif(@post.account_id === t.id) && !(t.image_url) %>
+                                    <a href="/home/<%=@post.account_id%>">
+                                        <%= image_tag 'myAvatar.png', :style => "width:50px; height:50px; border-radius: 50%" %>
+                                    </a>
+                            <% end %>
+                        <% end %>
+                        <h5 class="font-weight-bold " style="margin-top:-40px; margin-left:55px"> <%= @post.title %> </h5>
+                        <span class="badge badge-default position-absolute" style="font-size:10px; font-style:italic; right:0"> <%= @post.created_at.strftime("%D %I:%M %p") %>, <%= @comments.count %> comments <span>
                     </div>
                     <div class="card-body">
-                        <blockquote class="blockquote mb-0">
-                            <p style="font-size:15px"><%= @post.content %></p>
-                                <% if current_account && current_account.email === @post.email%>
-                                    <footer class="blockquote-footer"> <cite title="Source Title">My Article</cite></footer>
-                                <% else %>
-                                    <footer class="blockquote-footer">
-                                        Posted by:
-                                        <% @accounts.each do |acct| %>
-                                            <% if (@post.account_id === acct.id) && acct.image_url %>
-                                                <%= image_tag acct.image_url.to_s, :style => "width:35px; height:35px; border-radius: 10%" %>
-                                            <% elsif(@post.account_id === acct.id) && !(acct.image_url) %>
-                                                <%= image_tag 'icon.jpg', :style => "width:35px; height:35px; border-radius: 10%" %>
-                                            <% end %>
-                                        <% end %>
-                                        <a style="color:#6C7592" href="/home/<%=@post.account_id%>">
-                                            <cite title="Source Title">
-                                                <%= @post.email %>
-                                            </cite>
-                                        </a>
-                                    </footer> 
-                                <% end %>
-                        </blockquote>
+                        <% if @post.content.scan(/[\w-]+/).size < 90 %>
+                            <p class="card-text"><%= @post.content %></p>
+                            <% else %>
+                                <p id="cont<%=@post.id%>" class="long card-text">
+                                    <%= @post.content.truncate_words(90) %> 
+                                    <a href='#see' class="see" id="cont<%=@post.id%>"> see more </a> 
+                                </p>
+                                <div class="cont" id="cont<%=@post.id%>" hidden> 
+                                    <p class="card-text" id="hide<%=@post.id%>">
+                                        <%= @post.content %> <a href='#hide' class="hide" id="hide<%=@post.id%>"> see less </a>
+                                    </p>
+                                </div>
+                        <% end %>
                     </div>
                 </div>
                 <div class="card" style="margin-bottom:15px">
@@ -66,7 +78,7 @@
                     </div>
                     <div class="card-body" style="padding:10px" id="comments">
                         <% @comments.each do |comment| %>
-                            <div class="sample">
+                            <div class="sample wow fadeIn">
                                 <input value =<%= @post.id %> class="pId" hidden> 
                                 <input value =<%= comment.id %> class="cId" hidden> 
                                 <div class="image" style="margin-left:3px">
@@ -76,7 +88,7 @@
                                             
                                             <% elsif(comment.acctid === acct.id) && !(acct.image_url) %>
                                                 <%#border-radius: 50%%>
-                                                <%= image_tag 'icon.jpg', :style => "width:35px; height:35px; border-radius: 10%" %>
+                                                <%= image_tag 'myAvatar400.png', :style => "width:35px; height:35px; border-radius: 10%" %>
                                         <% end %>
                                     <% end %>
                                 </div>
@@ -110,46 +122,55 @@
                         <% end %>
                     </div>
                 </div>
+                <%= will_paginate @comments, renderer: BootstrapPagination::Rails %>
             </div>
-            <div class="position-fixed col-xs-12 col-sm-12 col-md-6 col-lg-5 offset-xs-12 offset-sm-6 offset-md-6 offset-lg-6 float">
+            <div class="position-fixed col-xs-12 col-sm-12 col-md-6 col-lg-5 offset-xs-12 offset-sm-6 offset-md-6 offset-lg-6 float delay-1s animated fadeIn">
                 <div>
                     <% if current_account %>
-                        <%= link_to "Create Post", "#post", :class => "btn btn-success col-md-12", "data-toggle" => "modal", :style => "margin-bottom:10px;" %> 
-                    <% end %>
+                        <%= link_to "Create Post", "#post", :class => "btn aqua-gradient col-md-12", "data-toggle" => "modal" %>                    <% end %>
                     <% if current_account %>
-                        <div class="card" style="margin-bottom:15px">
+                        <div class="card ml-2" style="margin-bottom:15px">
                             <form id="comment" method="POST" action="/posts/<%= @post.id %>/comments">
                                 <div class="card-body" style="padding:5px">
                                     <input class="form-control" value=<%= current_account.email%> name="comment[email]"  id="comment_email" hidden /> 
                                     <input class="form-control" value=<%= current_account.id%> name="comment[acctid]"  id="comment_acctid" hidden /> 
-                                    <textarea class="form-control" rows="3" name="comment[laman]" id="comment_laman" placeholder="Write your comment" required></textarea> 
-                                    <input class="btn btn-info btn-sm" style="float:right; margin:7px" type="submit" value="Submit" />
+                                    <textarea class="form-control " rows="3" name="comment[laman]" id="comment_laman" placeholder="Write your comment" required></textarea> 
+                                    <input class="btn btn-info btn-sm" type="submit" value="Submit" />
                                 </div>
                             </form>
                         </div>
                     <% end %>
                     <table class="table">
                         <thead class="thead-dark">
-                            <div class="card-header text-white" style="background-color:#F06191; padding:10px">
-                            <h5 style="text-align:center"> Trending Articles </h5>
+                            <div class="card-header text-white purple-gradient" style="padding:10px">
+                            <h5 style="text-align:center" class="font-weight-bold mb-0"> Trending Articles </h5>
                             </div>
                         </thead>
                         <tbody style="background-color:#F7F7F7">
-                            <tr>
-                                <td>
-                                    <a href="#">Nainit na ulam</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="#">New Year's Resolutions Scam</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="#">uganda</a>
-                                </td>
-                            </tr>
+                            <% @tops.each do |top| %>
+                                <tr>
+                                    <td class="p-0">
+                                        <div class="card p-2 animated fadeInLeft delay-2s">
+                                            <div>
+                                                <span class="badge badge-danger position-absolute" style="top:0; left:0"> <%= top.comments_count %> </span>
+                                                <% @accounts.each do |t| %>
+                                                    <% if(top.account_id === t.id) && t.image_url %>
+                                                        <%= image_tag t.image_url.to_s, :style => "width:40px; height:40px; border-radius: 50%" %>
+                                                            
+                                                        <% elsif(top.account_id === t.id) && !(t.image_url) %>
+                                                            <%= image_tag 'myAvatar.png', :style => "width:40px; height:40px; border-radius: 50%" %>
+                                                    <% end %>
+                                                <% end %>
+                                                <a href="/home/<%=top.id%>/posts" class="position-absolute ml-2">
+                                                    <p class="card-title">
+                                                        <%= top.title %>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% end %>
                         </tbody>
                     </table>
                 </div>
@@ -158,39 +179,39 @@
     </main>
     
 <% if current_account %>
-    <div class="modal fade bs-example-modal" id="post" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-md">
-        <form id="add" method="POST" action="/home/<%= current_account.id %>/posts">
-            <div class="modal-content">
-            <div class="modal-header" style="background-color:#343A40;">
-                <h4 class="modal-title" style="color:white; text-align:center"> Create Post</h4>
-                <button class="close" type="button" data-dismiss="modal"><span aria-hidden="true">×</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12"><b>Title</b>
-                    <input class="form-control" type="text" name="post[title]" id="post_title"/>  
+    <div class="modal fade" id="post" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog cascading-modal" role="document">
+            <form id="add" method="POST" action="/home/<%= current_account.id %>/posts">
+                <div class="modal-content">
+                    <div class="modal-header blue-gradient white-text">
+                        <h4 class="title"><i class="far fa-edit"></i>Create Post </h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <input class="form-control file-input" type="file" name="post[image]" id="post_image" accept="image/*" />
+                            <div class="col-md-12 md-form"><b>Title</b>
+                                <input class="form-control" type="text" name="post[title]" id="post_title"/>  
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 md-form"><b>Content</b>
+                                <textarea class="form-control md-textarea" rows="5" name="post[content]"  id="post_content"></textarea> 
+                            </div>
+                        </div>
+                        <input class="form-control" hidden type="email" value=<%= current_account.email %> name="post[email]" id="post_email"/>
+                        <input id="gawa" class="btn btn-info btn-sm float-right" type="submit" value="Create" />
                     </div>
                 </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-12"><b>Content</b>
-                        <textarea class="form-control" rows="5" name="post[content]"  id="post_content"></textarea> 
-                    </div>
-                </div>
-                    <input class="form-control" hidden type="email" value=<%= current_account.email %> name="post[email]" id="post_email"/>
-            <div class="modal-footer">
-                <input id="gawa" class="btn btn-info" type="submit" value="Create" />
-                <button class="btn btn-danger" type="button" data-dismiss="modal">Cancel</button>
-            </div>
-            </div>
-        </form>
+            </form>
         </div>
     </div>
 <% end %>
 
 <script>
-    $(document).ready(function(){ 
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+        new WOW().init();
         var u = window.location.href
         $.ajax({
             type: 'get',
@@ -249,7 +270,7 @@
                                     markup +='<div class="image" style="margin-left:3px">';
                                         $.each(json.acct, function(r,a){
                                             if(!a.image.url){
-                                                var empty_image = "/uploads/account/image/wala/icon.jpg";
+                                                var empty_image = "/uploads/account/image/wala/myAvatar400.png";
                                                 a.image.url = empty_image;
                                             }
                                             if (a.id && last.acctid === a.id){
@@ -278,7 +299,7 @@
                 else if(response.message == "failed"){
                     swal({
                         type: 'warning',
-                        title: 'Failed!!',
+                        title: 'Something went wrong, reload page',
                     })
                 }
                 
@@ -311,15 +332,33 @@
                         s.fadeOut()
                     )
                 }
+                else{
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+                    toast({
+                        type: 'warning',
+                        title: 'Something Went wrong'
+                    })
+                }
             }
         })
     })
     $("form#add").submit(function(w){
+        var form = $('form#add')[0];
+        var data = new FormData(form);
         w.preventDefault();
         $.ajax({
             type: "post",
             url: $('form#add').attr('action'),
-            data: $('form#add').serializeArray(),
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: new FormData(form),
             success: function(response){
                 if(response.message == "success"){
                     $('#post').modal('hide');
@@ -332,11 +371,10 @@
                         }, 1000)
                     )
                 }
-                else if(response.message == "failed"){
+                else if(!response){
                     swal({
                         type: 'warning',
-                        title: 'Login Failed!!',
-                        text: 'Incorrect email or password'
+                        text: 'Something went wrong, pls reload',
                     })
                 }
                 

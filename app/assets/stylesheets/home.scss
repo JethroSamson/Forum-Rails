@@ -13,13 +13,11 @@
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     color: #3F729B;
 }
-// @media (min-width: 230px){
-//     .float{
-//             margin-top:500px;
-//     }
-// }
-// @media (max-width: 245px){
-//     .main{
-//             margin-top:500px;
-//     }
+@media only screen and (max-device-width: 230px){
+    .float{
+        display: none;
+    }
+}
+// #navv{
+//     background-color: #2BBBAD;
 // }
