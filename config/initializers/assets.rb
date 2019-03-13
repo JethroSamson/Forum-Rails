@@ -7,16 +7,14 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.paths << Emoji.images_path
 # Add Yarn node_modules folder to the asset load path.
 Rails.application.config.assets.paths << Rails.root.join('node_modules')
-<% 
-=begin %> 
-    Rails.application.config.assets.precompile += %w( jquery.min.js )
-    Rails.application.config.assets.precompile += %w( sweetalert2.all.min.js )
-    Rails.application.config.assets.precompile += %w( sweetalert2.min.js )
-    Rails.application.config.assets.precompile += %w( sweetalert2.min.css )
-    Rails.application.config.assets.precompile += %w( moment.js )
-    Rails.application.config.assets.precompile += %w( moment.min.js )
-<% 
-=end %>
+
+# Rails.application.config.assets.precompile += %w( jquery.min.js )
+# Rails.application.config.assets.precompile += %w( sweetalert2.all.min.js )
+# Rails.application.config.assets.precompile += %w( sweetalert2.min.js )
+# Rails.application.config.assets.precompile += %w( sweetalert2.min.css )
+# Rails.application.config.assets.precompile += %w( moment.js )
+# Rails.application.config.assets.precompile += %w( moment.min.js )
+
 
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in the app/assets
