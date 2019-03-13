@@ -68,3 +68,4 @@ gem 'carrierwave', '~> 0.11.2'
 gem 'will_paginate', '~> 3.1', '>= 3.1.6'
 gem 'mdbootstrap-rails'
 gem "webpacker", require: false
+gem 'gem_fresh'
