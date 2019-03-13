@@ -6,15 +6,26 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
-  <%= javascript_include_tag('jquery.min.js') %>
-  <%= javascript_include_tag('sweetalert2.all.min.js') %>
-  <%= javascript_include_tag('sweetalert2.min.js') %>
-  <%= javascript_include_tag('moment.js') %>
-  <%= javascript_include_tag('moment.min.js') %>
+    <%=javascript_include_tag("https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js")%>
+    <%=javascript_include_tag("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js")%>
+    <%=javascript_include_tag("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js")%>
+    <%=javascript_include_tag("https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/js/mdb.min.js")%>
+    
+    <%= javascript_include_tag('jquery.min.js') %>
+    <%= javascript_include_tag('sweetalert2.all.min.js') %>
+    <%= javascript_include_tag('sweetalert2.min.js') %>
+    <%= javascript_include_tag('moment.js') %>
+    <%= javascript_include_tag('moment.min.js') %>
+    
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%=stylesheet_link_tag "https://use.fontawesome.com/releases/v5.7.0/css/all.css"%>
+    <%=stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"%>
+    <%=stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/css/mdb.min.css"%>
   <%= stylesheet_link_tag "sweetalert2.min.css" %>
+  </head>
+
+
 
 <% 
 =begin %> 
@@ -24,14 +35,6 @@
 <% 
 =end %>
 
-  <%=javascript_include_tag("https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js")%>
-  <%=javascript_include_tag("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js")%>
-  <%=javascript_include_tag("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.min.js")%>
-  <%=javascript_include_tag("https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.1/js/mdb.min.js")%>
-
-  <%=stylesheet_link_tag "https://use.fontawesome.com/releases/v5.7.0/css/all.css"%>
-  <%=stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css"%>
-  <%=stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.1/css/mdb.min.css"%>
   
   <body style="background-color:#DAE0E6">
     <%= yield %>
